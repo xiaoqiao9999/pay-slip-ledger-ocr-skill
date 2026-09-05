@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>付款回单台账系统 · 使用说明</title>
+<style>
+  :root{
+    --primary:#2b5797; --primary-light:#ddebf7; --accent:#fce4d6;
+    --ok:#e2efda; --ok-text:#375623; --warn:#fff2cc; --warn-text:#7f6000;
+    --danger:#fbe5d6; --danger-text:#833c00;
+    --border:#d5dce6; --bg:#f7f9fc; --card:#ffffff; --text:#24292f; --muted:#6a737d;
+    --code-bg:#f2f4f8;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:"Microsoft YaHei","PingFang SC","Segoe UI",Arial,sans-serif;
+    background:var(--bg); color:var(--text); line-height:1.75; padding:32px 16px 60px;
+  }
+  .page{max-width:920px; margin:0 auto;}
+  header.hero{
+    background:linear-gradient(135deg,#2b5797 0%,#3a6ec5 55%,#4f8ad6 100%);
+    color:#fff; border-radius:14px; padding:34px 38px 30px;
+    box-shadow:0 6px 18px rgba(43,87,151,.25);
+  }
+  header.hero h1{font-size:26px; letter-spacing:1px; margin-bottom:6px;}
+  header.hero .sub{opacity:.92; font-size:14px;}
+  header.hero .meta{margin-top:16px; display:flex; flex-wrap:wrap; gap:8px;}
+  header.hero .meta span{
+    background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.35);
+    padding:3px 12px; border-radius:999px; font-size:12px;
+  }
+  h2{
+    font-size:19px; color:var(--primary); margin:40px 0 14px; padding-left:12px;
+    border-left:5px solid var(--primary); line-height:1.4;
+  }
+  h3{font-size:15px; color:#1a2f4e; margin:20px 0 8px;}
+  .card{
+    background:var(--card); border:1px solid var(--border); border-radius:10px;
+    padding:20px 22px; margin-bottom:14px; box-shadow:0 1px 3px rgba(20,40,80,.05);
+  }
+  p{margin:6px 0;}
+  ul,ol{margin:6px 0 6px 22px;}
+  li{margin:4px 0;}
+  code,pre{
+    font-family:Consolas,"Courier New",monospace; font-size:13px;
+    background:var(--code-bg); border-radius:4px;
+  }
+  code{padding:1px 6px; color:#c0392b;}
+  pre{padding:12px 14px; overflow-x:auto; border:1px solid var(--border); margin:8px 0;}
+  pre code{padding:0; color:var(--text);}
+  table{width:100%; border-collapse:collapse; font-size:13px; margin:8px 0;}
+  th,td{border:1px solid var(--border); padding:7px 10px; text-align:left; vertical-align:top;}
+  th{background:var(--primary-light); color:#1a2f4e; font-weight:700; white-space:nowrap;}
+  tr:nth-child(even) td{background:#fafbfd;}
+  .badge{
+    display:inline-block; padding:1px 8px; border-radius:999px;
+    font-size:11px; font-weight:700; white-space:nowrap;
+  }
+  .b-req{background:var(--danger); color:var(--danger-text);}
+  .b-opt{background:var(--code-bg); color:var(--muted); border:1px solid var(--border);}
+  .b-ok{background:var(--ok); color:var(--ok-text);}
+  .b-warn{background:var(--warn); color:var(--warn-text);}
+  .callout{border-radius:8px; padding:12px 16px; margin:12px 0; font-size:13.5px;}
+  .callout.ok{background:var(--ok); border-left:4px solid #70ad47;}
+  .callout.warn{background:var(--warn); border-left:4px solid #ffc000;}
+  .callout.danger{background:var(--danger); border-left:4px solid #ed7d31;}
+  .callout.info{background:var(--primary-light); border-left:4px solid var(--primary);}
+  .steps{counter-reset:step;}
+  .step{
+    counter-increment:step; position:relative; padding:14px 16px 14px 58px;
+    background:var(--card); border:1px solid var(--border); border-radius:10px;
+    margin-bottom:12px;
+  }
+  .step::before{
+    content:counter(step); position:absolute; left:14px; top:14px;
+    width:30px; height:30px; border-radius:50%; background:var(--primary); color:#fff;
+    font-weight:700; display:flex; align-items:center; justify-content:center; font-size:15px;
+  }
+  .step b{color:var(--primary);}
+  .tree{
+    font-family:Consolas,"Courier New",monospace; font-size:13px; background:var(--card);
+    border:1px solid var(--border); border-radius:10px; padding:16px 18px; overflow-x:auto;
+  }
+  .tree .dir{color:var(--primary); font-weight:700;}
+  .tree .file{color:var(--text);}
+  .tree .cmt{color:var(--muted); font-style:italic;}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media (max-width:760px){.grid2{grid-template-columns:1fr;}}
+  .footer{
+    margin-top:44px; padding-top:14px; border-top:1px dashed var(--border);
+    color:var(--muted); font-size:12px; text-align:center;
+  }
+  @media print{
+    body{background:#fff; padding:0;}
+    .card,header.hero,.step{box-shadow:none;}
+    header.hero{border-radius:0;}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="hero">
+  <h1>付款回单台账系统 · 使用说明</h1>
+  <div class="sub">财务付款回单 PNG → OCR 智能识别 → 自动生成台账 → 按供应商归档</div>
+  <div class="meta">
+    <span>版本 v2.0</span>
+    <span>更新日期 2026-09-03</span>
+    <span>适用对象：经办 / 财务人员</span>
+  </div>
+</header>
+
+<!-- 一、功能概览 -->
+<h2>一、这个系统能做什么</h2>
+<div class="card">
+  <p>把财务发来的付款回单图片（微信截图 / PNG），<b>自动识别文字、提取关键信息、写入 Excel 台账</b>，并按供应商分类归档原图。全程无需手工录入，一张图约 20 秒自动完成。</p>
+  <ul>
+    <li><b>识别字段：</b>12 项（收款人、金额、摘要、日期、流水号、批次号等）</li>
+    <li><b>自动入账：</b>追加到台账末尾，表尾自动计算「合计」</li>
+    <li><b>按供应商归档：</b>原图重命名后放入 <code>已完成\供应商名称\</code></li>
+    <li><b>防重复：</b>同一张回单重复投放会自动跳过，不会重复入账</li>
+  </ul>
+</div>
+
+<!-- 二、目录结构 -->
+<h2>二、目录结构（工作区）</h2>
+<div class="tree">
+<pre><span class="dir"><工作区>\</span>
+├── <span class="file">扫描付款回单生成台账.py</span>   <span class="cmt">← 主程序（日常只需运行它）</span>
+├── <span class="file">付款回单台账.xlsx</span>          <span class="cmt">← 台账成果（Excel，双击可看）</span>
+├── <span class="file">扫描日志.txt</span>               <span class="cmt">← 每次运行记录（自动生成）</span>
+├── <span class="dir">输入\</span>                      <span class="cmt">← 新回单投放区（把图丢这里）</span>
+└── <span class="dir">已完成\</span>                    <span class="cmt">← 归档区（自动生成）</span>
+    └── <span class="dir">供应商名称\</span>…            <span class="cmt">← 按收款人分类的子文件夹</span></pre>
+</div>
+<div class="callout info">
+  <b>使用约定：</b>正常使用时你只需要动两个地方 —— 把新回单放进 <code>输入\</code>，其余（识别、入账、归档）全部自动完成。目录结构不要手动改动。
+</div>
+
+<!-- 三、日常使用 -->
+<h2>三、日常怎么用（三步）</h2>
+<div class="steps">
+  <div class="step">
+    <b>放入新回单。</b>财务发来的回单 PNG 全部丢进 <code><工作区>\输入\</code> 文件夹（一次可放多张）。
+  </div>
+  <div class="step">
+    <b>运行程序。</b>打开命令行，执行：<br>
+    <pre><code>python "<工作区>\扫描付款回单生成台账.py"</code></pre>
+    程序会逐张识别（每张约 20 秒，多张时请耐心等待），结束后自动完成入账与归档。
+  </div>
+  <div class="step">
+    <b>查看结果。</b>打开 <code>付款回单台账.xlsx</code> 核对新增行与底部合计；原图已按供应商分好类存放在 <code>已完成\</code> 下。
+  </div>
+</div>
+
+<div class="callout ok">
+  <b>想先试跑不落盘？</b>加 <code>--dry-run</code> 参数即可「只预览、不写台账、不移动文件」：<code>python "…\扫描付款回单生成台账.py" --dry-run</code>
+</div>
+
+<!-- 四、运行参数 -->
+<h2>四、运行参数（可选）</h2>
+<div class="card">
+  <table>
+    <tr><th style="width:150px">参数</th><th>作用</th><th>默认值</th></tr>
+    <tr><td><code>--input &lt;目录&gt;</code></td><td>指定回单图片所在目录</td><td><code>…\转账回单\输入</code></td></tr>
+    <tr><td><code>--output &lt;xlsx&gt;</code></td><td>指定台账输出路径</td><td><code>…\转账回单\付款回单台账.xlsx</code></td></tr>
+    <tr><td><code>--done &lt;目录&gt;</code></td><td>指定归档目录</td><td><code>…\转账回单\已完成</code></td></tr>
+    <tr><td><code>--ocr-script &lt;ps1&gt;</code></td><td>指定本地 OCR 引擎脚本路径</td><td>本地 NPU OCR <code>run.ps1</code></td></tr>
+    <tr><td><code>--dry-run</code></td><td>试运行模式：只预览结果，不写台账、不移动文件</td><td>关闭</td></tr>
+    <tr><td><code>--limit N</code></td><td>只处理前 N 张（测试用）</td><td>0（全部）</td></tr>
+  </table>
+  <p>绝大多数情况直接双击运行或使用默认命令即可，无需带任何参数。</p>
+</div>
+
+<!-- 五、台账字段 -->
+<h2>五、台账字段说明</h2>
+<div class="card">
+  <table>
+    <tr>
+      <th style="width:40px">#</th><th>列名</th><th style="width:70px">性质</th><th>说明</th>
+    </tr>
+    <tr><td>1</td><td>序号</td><td><span class="badge b-opt">自动</span></td><td>按入账顺序自动编号</td></tr>
+    <tr><td>2</td><td>记账日期</td><td><span class="badge b-opt">可选</span></td><td>回单底部的记账日期；缺失时留空，不影响入账</td></tr>
+    <tr><td>3</td><td>付款人名称</td><td><span class="badge b-opt">可选</span></td><td>通常为付款单位</td></tr>
+    <tr><td>4</td><td>收款人名称</td><td><span class="badge b-req">必须</span></td><td>即供应商，缺此项该单不归档</td></tr>
+    <tr><td>5</td><td>收款人账号</td><td><span class="badge b-opt">可选</span></td><td>数字，自动去掉空格</td></tr>
+    <tr><td>6</td><td>开户行</td><td><span class="badge b-opt">可选</span></td><td>取收款方开户行（回单出现两次开户行时自动取第二个）</td></tr>
+    <tr><td>7</td><td>币种</td><td><span class="badge b-opt">可选</span></td><td>通常为 CNY</td></tr>
+    <tr><td>8</td><td>金额</td><td><span class="badge b-req">必须</span></td><td>数字金额（自动兼容千分位、全角逗号等格式），右对齐保留两位小数</td></tr>
+    <tr><td>9</td><td>金额大写</td><td><span class="badge b-opt">可选</span></td><td>人民币大写原样保留</td></tr>
+    <tr><td>10</td><td>摘要</td><td><span class="badge b-req">必须</span></td><td>付款事由（如“潜污泵采购预付款”），缺此项该单不归档</td></tr>
+    <tr><td>11</td><td>会计流水号</td><td><span class="badge b-opt">可选</span></td><td><b>同时是去重依据</b>：同一流水号只入账一次</td></tr>
+    <tr><td>12</td><td>批次元号</td><td><span class="badge b-opt">可选</span></td><td>银行批次信息</td></tr>
+  </table>
+  <div class="callout warn">
+    <b>字段规则（重要）：</b>只有 <b>收款人名称、金额、摘要</b> 三项是入账必需的（这三项齐全即正常入账并归档）；其余均为可选项，缺失时单元格留空，不影响使用。<br>
+    只有当三项必需字段中任一项识别失败时，该单才会被标记「待人工核对」并<b>留在输入目录</b>，等待人工检查。
+  </div>
+</div>
+
+<!-- 六、归档命名 -->
+<h2>六、归档与命名规则</h2>
+<div class="card">
+  <p>识别成功的回单，原图会按以下规则<b>重命名</b>并移入对应供应商文件夹：</p>
+  <pre><code>已完成\收款人名称\收款人名称_金额(两位小数)_摘要_记账日期.png</code></pre>
+  <p><b>示例：</b></p>
+  <ul>
+    <li><code>保定蓝深环保科技有限公司_13920.00_潜污泵采购预付款_2026-08-11.png</code></li>
+    <li><code>台州大昌过滤材料有限公司_9185.40_滤布采购款.png</code>　<span class="badge b-warn">无日期时省略日期段</span></li>
+  </ul>
+  <p><b>几种自动处理：</b></p>
+  <ul>
+    <li><b>按供应商分类：</b>自动在 <code>已完成\</code> 下创建以「收款人名称」命名的子文件夹</li>
+    <li><b>重名不覆盖：</b>同一供应商、同金额、同摘要的多笔，自动追加 <code>_2</code>、<code>_3</code> 后缀</li>
+    <li><b>日期缺失：</b>半截回单（无底部日期区域）正常入账归档，文件名省略日期段</li>
+  </ul>
+</div>
+
+<!-- 七、去重与安全 -->
+<h2>七、防重复与安全性</h2>
+<div class="card">
+  <table>
+    <tr><th style="width:140px">机制</th><th>说明</th></tr>
+    <tr><td>按流水号去重</td><td>程序先读台账已有「会计流水号」，识别后比对——同一流水号直接跳过，不会重复入账（即使文件名不同）</td></tr>
+    <tr><td>可重复运行</td><td>同一批图跑两遍，第二遍会全部跳过，台账不会翻倍</td></tr>
+    <tr><td>失败不丢单</td><td>OCR 失败或必需字段缺失的单据留在 <code>输入\</code> 目录、不删除原图，处理记录写入 <code>扫描日志.txt</code></td></tr>
+    <tr><td>追加不覆盖</td><td>台账已存在的历史记录不会被覆盖，新单只往后追加</td></tr>
+  </table>
+  <div class="callout danger">
+    <b>注意：</b>运行期间请勿用 Excel / WPS 打开台账文件（会锁文件导致写入失败）。程序提示失败时，关闭台账后重新运行即可，已入账部分不会重复。
+  </div>
+</div>
+
+<!-- 八、常见情况 -->
+<h2>八、常见情况处理</h2>
+<div class="card">
+  <table>
+    <tr><th style="width:190px">情况</th><th>系统表现</th><th>你需要做什么</th></tr>
+    <tr><td>正常完整回单</td><td>识别 → 入账 → 重命名归档进供应商文件夹</td><td>无需操作</td></tr>
+    <tr><td>半截回单（只有上半部分）</td><td>收款人/金额/摘要齐全即正常入账，日期等可选字段留空</td><td>无需操作；如需日期可向财务要完整截图</td></tr>
+    <tr><td>重复投放同一批图</td><td>按流水号自动跳过，不重复入账</td><td>无需操作</td></tr>
+    <tr><td>必需字段读不出</td><td>行内标「待人工核对」，原图留在 <code>输入\</code></td><td>人工查看原图，修正或重发清晰图片后再跑</td></tr>
+    <tr><td>供应商名称写法不一</td><td>如「荆州区昌顺」与「沙市区昌顺」会各建文件夹</td><td>需要合并时告诉助手，可同步合并台账与归档文件</td></tr>
+  </table>
+</div>
+
+<!-- 九、常见问题 -->
+<h2>九、常见问题（FAQ）</h2>
+<div class="card">
+  <h3>Q1：每次跑要多久？</h3>
+  <p>约 20 秒 / 张（本地 CPU 识别）。10 张约 3~4 分钟，耐心等待窗口跑完即可。</p>
+
+  <h3>Q2：运行窗口一闪而过 / 报错怎么办？</h3>
+  <p>先看 <code>扫描日志.txt</code> 的报错内容；最常见的两个原因：①台账正被 Excel/WPS 打开（关闭后再跑）；②某张图片 OCR 超时（该张会跳过并记入日志，不影响其余）。仍有问题可把日志发给助手排查。</p>
+
+  <h3>Q3：台账能不能加/减字段？</h3>
+  <p>可以。脚本采用表头驱动设计，加字段只需修改脚本中的表头与提取规则；历史数据追加不受影响。需要改动时告诉助手即可。</p>
+
+  <h3>Q4：会计流水号缺失的单据还能去重吗？</h3>
+  <p>流水号缺失（如半截回单）时按流水号去重会失效，请勿重复投放同一张图。如希望加强去重，可告诉助手增加「按文件名+金额+摘要」的兜底去重规则。</p>
+
+  <h3>Q5：归档文件名里的供应商名想要统一的正式名？</h3>
+  <p>可建立「别名 → 正式名称」对照表，让脚本识别时自动归一化（例如把同一家店的多种写法统一为一个名称）。需要时告诉助手配置。</p>
+</div>
+
+<!-- 十、运行环境 -->
+<h2>十、运行环境与技术备注</h2>
+<div class="card">
+  <table>
+    <tr><th style="width:170px">项目</th><th>说明</th></tr>
+    <tr><td>Python</td><td>系统 Python 3.13（<code>python</code>），已内置 openpyxl 3.1.5</td></tr>
+    <tr><td>OCR 引擎</td><td>本地 NPU OCR（<code>run.ps1</code>），与采购文档“一键生成”工作流同款，离线运行</td></tr>
+    <tr><td>支持图片格式</td><td>PNG / JPG / JPEG</td></tr>
+    <tr><td>OCR 兼容性</td><td>已自动兼容：金额千分位/全角逗号（1，398.00）、字段换行、部分字段名变体（如“批次号”）</td></tr>
+  </table>
+</div>
+
+<!-- 变更记录 -->
+<h2>附：版本变更记录</h2>
+<div class="card">
+  <table>
+    <tr><th style="width:110px">日期</th><th>版本</th><th>变更内容</th></tr>
+    <tr><td>2026-09-03</td><td>v2.0</td><td>归档按供应商自动分文件夹；可选字段缺失不再拦截（仅必需项缺失才留输入目录）；半截回单直接入账归档</td></tr>
+    <tr><td>2026-09-03</td><td>v1.1</td><td>删除「源文件」列（13→12 列）；归档名金额改两位小数；去重键改为会计流水号</td></tr>
+    <tr><td>2026-09-03</td><td>v1.0</td><td>系统上线：15 张首批回单识别成功，首版台账建立</td></tr>
+  </table>
+</div>
+
+<div class="footer">
+  付款回单台账系统 · 使用说明　|　工作区：<工作区>　|　更新于 2026-09-03
+</div>
+
+</div>
+</body>
+</html>
