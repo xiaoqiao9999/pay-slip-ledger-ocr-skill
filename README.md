@@ -43,21 +43,22 @@ python pay_slip_ledger_scan.py --limit 3       # 只处理前 3 张（调试）
 - 必须字段：收款人名称 / 金额 / 摘要（缺失才拦截）；记账日期、流水号等可选
 - 归档命名：`收款人_金额两位小数_摘要[_记账日期].png` → `已完成/<收款人>/`，重名加 `_2`
 
-## 发布到 GitHub（首次，私有仓库示例）
+## 远程仓库
+
+本仓库已发布到 GitHub（**Private**）：
+
+```
+https://github.com/xiaoqiao9999/pay-slip-ledger-ocr-skill
+```
+
+日常更新推送：
 
 ```bash
 cd pay-slip-ledger-ocr-skill
-git config user.name  "你的GitHub用户名"
-git config user.email "你的GitHub邮箱"
-git branch -M main
 git add .
-git commit -m "feat: 付款回单 OCR 台账 skill"
-git remote add origin https://github.com/<你的用户名>/pay-slip-ledger-ocr-skill.git
-git push -u origin main
+git commit -m "chore: 更新说明"
+git push          # 已配置 -u origin main，直接 push 即可
 ```
-
-> 先在 github.com 新建空仓库（建议 **Private**，勾选不添加 README/.gitignore），
-> 再把上面 remote 地址换成你自己的仓库地址。
 
 ## License
 
